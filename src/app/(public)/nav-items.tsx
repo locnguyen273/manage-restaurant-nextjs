@@ -34,7 +34,7 @@ export default function NavItems({ className }: { className?: string }) {
   }, [])
 
   return menuItems.map((item) => {
-    if((item.authRequired === false && isAuth) || (item.authRequired === true && !isAuth)) return null;
+    if(item.authRequired === false && isAuth || item.authRequired === true && !isAuth) return null;
     return (
       <Link href={item.href} key={item.href} className={className}>
         {item.title}
