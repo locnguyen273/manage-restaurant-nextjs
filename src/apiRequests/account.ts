@@ -1,8 +1,10 @@
 import http from '@/app/lib/http'
-import { AccountResType } from '@/schemaValidations/account.schema'
+import { AccountResType, ChangePasswordBodyType, UpdateMeBodyType } from '@/schemaValidations/account.schema'
 
 const accountApiRequest = {
-  me: () => http.get<AccountResType>('/accounts/me')
+  me: () => http.get<AccountResType>('/accounts/me'),
+  updateMe: (body: UpdateMeBodyType) => http.put<AccountResType>('/accounts/me', body),
+  changePassword: (body: ChangePasswordBodyType) => http.put<AccountResType>('/accounts/change-password', body),
 }
 
 export default accountApiRequest
