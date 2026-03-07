@@ -9,7 +9,7 @@ import { UpdateMeBody, UpdateMeBodyType } from '@/schemaValidations/account.sche
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Form, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { use, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useAccountProfile, useUpdateMeMutation } from '@/queries/useAccount'
 import { useUploadMediaMutation } from '@/queries/useMedia'
 import { toast } from 'sonner'
@@ -25,7 +25,7 @@ export default function UpdateProfileForm() {
     resolver: zodResolver(UpdateMeBody),
     defaultValues: {
       name: '',
-      avatar: ''
+      avatar: undefined
     }
   })
   const avatar = form.watch('avatar')
@@ -36,7 +36,7 @@ export default function UpdateProfileForm() {
       const { name, avatar } = data.payload.data
       form.reset({
         name,
-        avatar: avatar ?? ''
+        avatar: avatar ?? undefined
       })
     }
   }, [form, data])
