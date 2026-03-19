@@ -24,6 +24,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { useGetDishMutation, useUpdateDishMutation } from '@/queries/useDish'
 import { useUploadMediaMutation } from '@/queries/useMedia'
 import { toast } from 'sonner'
+import revalidateApiRequest from '@/apiRequests/revalidate'
 
 export default function EditDish({
   id,
@@ -89,7 +90,9 @@ export default function EditDish({
         }
       }
       const result = await updateDishMutation.mutateAsync(body)
+      await revalidateApiRequest('dishes')
       toast.success(result.payload.message)
+      setId(undefined)
       onSubmitSuccess && onSubmitSuccess()
     } catch (error) {
       handleErrorApi({ error, setError: form.setError })
@@ -116,7 +119,15 @@ export default function EditDish({
           <DialogDescription>Các trường sau đây là bắ buộc: Tên, ảnh</DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form noValidate className='grid auto-rows-max items-start gap-4 md:gap-8' id='edit-dish-form.'onSubmit={form.handleSubmit(onSubmit)}>
+          <form
+            noValidate
+            className='grid auto-rows-max items-start gap-4 md:gap-8'
+            id='edit-dish-form'
+            onSubmit={form.handleSubmit(onSubmit, (e) => {
+              console.log(e)
+            })}
+            onReset={reset}
+          >
             <div className='grid gap-4 py-4'>
               <FormField
                 control={form.control}
@@ -177,7 +188,13 @@ export default function EditDish({
                     <div className='grid grid-cols-4 items-center justify-items-start gap-4'>
                       <Label htmlFor='price'>Giá</Label>
                       <div className='col-span-3 w-full space-y-2'>
-                        <Input id='price' className='w-full' {...field} type='number' />
+                        <Input
+                          id='price'
+                          className='w-full'
+                          {...field}
+                          type='number'
+                          onChange={(e) => form.setValue('price', Number(e.target.value))}
+                        />
                         <FormMessage />
                       </div>
                     </div>

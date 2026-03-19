@@ -17,6 +17,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { useAddDishMutation } from '@/queries/useDish'
 import { useUploadMediaMutation } from '@/queries/useMedia'
 import { toast } from 'sonner'
+import revalidateApiRequest from '@/apiRequests/revalidate'
 
 export default function AddDish() {
   const [file, setFile] = useState<File | null>(null)
@@ -63,6 +64,7 @@ export default function AddDish() {
         }
       }
       const result = await addDishMutation.mutateAsync(body)
+      await revalidateApiRequest('dishes')
       toast.success(result.payload.message)
       reset()
       setOpen(false)
@@ -159,7 +161,7 @@ export default function AddDish() {
                     <div className='grid grid-cols-4 items-center justify-items-start gap-4'>
                       <Label htmlFor='price'>Giá</Label>
                       <div className='col-span-3 w-full space-y-2'>
-                        <Input id='price' className='w-full' {...field} type='number' />
+                        <Input id='price' className='w-full' {...field} type='number' onChange={(e) => form.setValue("price", Number(e.target.value))} />
                         <FormMessage />
                       </div>
                     </div>

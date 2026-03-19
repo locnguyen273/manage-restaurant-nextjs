@@ -14,7 +14,7 @@ export type CreateDishBodyType = z.TypeOf<typeof CreateDishBody>
 export const DishSchema = z.object({
   id: z.number(),
   name: z.string(),
-  price: z.coerce.number(),
+  price: z.number(),
   description: z.string(),
   image: z.string(),
   status: z.enum(DishStatusValues),
