@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Menu, Package2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import DarkModeToggle from '@/components/dark-mode-toggle'
 import NavItems from '@/app/(public)/nav-items'
 
@@ -18,7 +18,7 @@ export default function Layout({
             <Package2 className='h-6 w-6' />
             <span className='sr-only'>Big boy</span>
           </Link>
-          <NavItems className='text-muted-foreground transition-colors hover:text-foreground flex-shrink-0' />
+          <NavItems className='text-muted-foreground transition-colors hover:text-foreground shrink-0' />
         </nav>
         <Sheet>
           <SheetTrigger asChild>
@@ -28,6 +28,9 @@ export default function Layout({
             </Button>
           </SheetTrigger>
           <SheetContent side='left'>
+            <SheetHeader>
+              <SheetTitle></SheetTitle>
+            </SheetHeader>
             <nav className='grid gap-6 text-lg font-medium'>
               <Link href='#' className='flex items-center gap-2 text-lg font-semibold'>
                 <Package2 className='h-6 w-6' />
