@@ -15,10 +15,11 @@ import {
   getSortedRowModel,
   useReactTable
 } from '@tanstack/react-table'
-import { formatDateTimeToLocaleString, simpleMatchText } from '@/lib/utils'
+import { formatDateTimeToLocaleString, simpleMatchText } from '@/app/lib/utils'
 import { Input } from '@/components/ui/input'
 import { GetListGuestsResType } from '@/schemaValidations/account.schema'
 import { endOfDay, format, startOfDay } from 'date-fns'
+import { useGetGuestList } from '@/queries/useAccount'
 
 type GuestItem = GetListGuestsResType['data'][0]
 
@@ -64,7 +65,11 @@ export default function GuestsDialog({ onChoose }: { onChoose: (guest: GuestItem
   const [open, setOpen] = useState(false)
   const [fromDate, setFromDate] = useState(initFromDate)
   const [toDate, setToDate] = useState(initToDate)
-  const data: GetListGuestsResType['data'] = []
+  const guestListQuery = useGetGuestList({
+    fromDate,
+    toDate
+  })
+  const data: GetListGuestsResType['data'] = guestListQuery.data?.payload.data ?? []
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
@@ -118,7 +123,7 @@ export default function GuestsDialog({ onChoose }: { onChoose: (guest: GuestItem
       <DialogTrigger asChild>
         <Button variant='outline'>Chọn khách</Button>
       </DialogTrigger>
-      <DialogContent className='sm:max-w-[700px] max-h-full overflow-auto'>
+      <DialogContent className='sm:max-w-175 max-h-full overflow-auto'>
         <DialogHeader>
           <DialogTitle>Chọn khách hàng</DialogTitle>
         </DialogHeader>
@@ -153,13 +158,13 @@ export default function GuestsDialog({ onChoose }: { onChoose: (guest: GuestItem
                 placeholder='Tên hoặc Id'
                 value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
                 onChange={(event) => table.getColumn('name')?.setFilterValue(event.target.value)}
-                className='w-[170px]'
+                className='w-42.5'
               />
               <Input
                 placeholder='Số bàn'
                 value={(table.getColumn('tableNumber')?.getFilterValue() as string) ?? ''}
                 onChange={(event) => table.getColumn('tableNumber')?.setFilterValue(event.target.value)}
-                className='w-[80px]'
+                className='w-20'
               />
             </div>
             <div className='rounded-md border'>
@@ -216,7 +221,11 @@ export default function GuestsDialog({ onChoose }: { onChoose: (guest: GuestItem
                 <AutoPagination
                   page={table.getState().pagination.pageIndex + 1}
                   pageSize={table.getPageCount()}
-                  pathname='/manage/Guests'
+                  onClick={pageNumber => table.setPagination({
+                    pageIndex: pageNumber - 1,
+                    pageSize: PAGE_SIZE
+                  })}
+                  isLink={false}
                 />
               </div>
             </div>

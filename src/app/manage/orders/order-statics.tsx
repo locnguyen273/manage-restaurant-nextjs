@@ -1,7 +1,7 @@
 import { Fragment, useState } from 'react'
 import { Users } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
-import { OrderStatusIcon, cn, getVietnameseOrderStatus } from '@/lib/utils'
+import { OrderStatusIcon, cn, getVietnameseOrderStatus } from '@/app/lib/utils'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { OrderStatus, OrderStatusValues } from '@/constants/type'
 import { TableListResType } from '@/schemaValidations/table.schema'
@@ -71,7 +71,7 @@ export default function OrderStatics({
                 const orders = selectedServingGuest[Number(guestId)]
                 return (
                   <div key={guestId}>
-                    <OrderGuestDetail guest={orders[0].guest} orders={orders} />
+                    <OrderGuestDetail guest={orders[0].guest} orders={orders} onPaySuccess={() => setSelectedTableNumber(0)} />
                     {index !== Object.keys(selectedServingGuest).length - 1 && <Separator className='my-5' />}
                   </div>
                 )

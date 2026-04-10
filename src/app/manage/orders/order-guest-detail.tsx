@@ -6,19 +6,33 @@ import {
   formatCurrency,
   formatDateTimeToLocaleString,
   formatDateTimeToTimeString,
-  getVietnameseOrderStatus
-} from '@/lib/utils'
-import { GetOrdersResType } from '@/schemaValidations/order.schema'
+  getVietnameseOrderStatus,
+  handleErrorApi
+} from '@/app/lib/utils'
+import { GetOrdersResType, PayGuestOrdersResType } from '@/schemaValidations/order.schema'
 import Image from 'next/image'
 import { Fragment } from 'react'
+import { usePayForGuestMutation } from '@/queries/useOrder'
 
 type Guest = GetOrdersResType['data'][0]['guest']
 type Orders = GetOrdersResType['data']
-export default function OrderGuestDetail({ guest, orders }: { guest: Guest; orders: Orders }) {
+export default function OrderGuestDetail({ guest, orders, onPaySuccess }: { guest: Guest; orders: Orders, onPaySuccess?: (data: PayGuestOrdersResType) => void }) {
   const ordersFilterToPurchase = guest
     ? orders.filter((order) => order.status !== OrderStatus.Paid && order.status !== OrderStatus.Rejected)
     : []
   const purchasedOrderFilter = guest ? orders.filter((order) => order.status === OrderStatus.Paid) : []
+  const payForGuestMutation = usePayForGuestMutation()
+  const pay = async () => {
+    if (payForGuestMutation.isPending || !guest) return  
+    try {
+      const result = await payForGuestMutation.mutateAsync({ guestId: guest.id })
+      onPaySuccess && onPaySuccess(result.payload)
+    } catch (error) {
+      handleErrorApi({
+        error,
+      })
+    }
+  }
   return (
     <div className='space-y-2 text-sm'>
       {guest && (
@@ -43,7 +57,7 @@ export default function OrderGuestDetail({ guest, orders }: { guest: Guest; orde
         {orders.map((order, index) => {
           return (
             <div key={order.id} className='flex gap-2 items-center text-xs'>
-              <span className='w-[10px]'>{index + 1}</span>
+              <span className='w-2.5'>{index + 1}</span>
               <span title={getVietnameseOrderStatus(order.status)}>
                 {order.status === OrderStatus.Pending && <OrderStatusIcon.Pending className='w-4 h-4' />}
                 {order.status === OrderStatus.Processing && <OrderStatusIcon.Processing className='w-4 h-4' />}
@@ -57,9 +71,9 @@ export default function OrderGuestDetail({ guest, orders }: { guest: Guest; orde
                 title={order.dishSnapshot.name}
                 width={30}
                 height={30}
-                className='h-[30px] w-[30px] rounded object-cover'
+                className='h-7.5 w-7.5 rounded object-cover'
               />
-              <span className='truncate w-[70px] sm:w-[100px]' title={order.dishSnapshot.name}>
+              <span className='truncate w-17.5 sm:w-25' title={order.dishSnapshot.name}>
                 {order.dishSnapshot.name}
               </span>
               <span className='font-semibold' title={`Tổng: ${order.quantity}`}>
@@ -115,7 +129,7 @@ export default function OrderGuestDetail({ guest, orders }: { guest: Guest; orde
       </div>
 
       <div>
-        <Button className='w-full' size={'sm'} variant={'secondary'} disabled={ordersFilterToPurchase.length === 0}>
+        <Button className='w-full' size={'sm'} variant={'secondary'} disabled={ordersFilterToPurchase.length === 0} onClick={pay}>
           Thanh toán tất cả ({ordersFilterToPurchase.length} đơn)
         </Button>
       </div>

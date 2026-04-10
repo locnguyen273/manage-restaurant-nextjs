@@ -82,3 +82,16 @@ export const useDeleteAccountMutation = () => {
     }
   })
 }
+
+export const useGetGuestList = (queryParams: { fromDate?: Date, toDate?: Date }) => {
+  return useQuery({
+    queryKey: ['guests', queryParams],
+    queryFn: () => accountApiRequest.guestList(queryParams)
+  })
+}
+
+export const useCreateGuestMutation = () => {
+  return useMutation({
+    mutationFn: (body: Parameters<typeof accountApiRequest.createGuest>[0]) => accountApiRequest.createGuest(body)
+  })
+}

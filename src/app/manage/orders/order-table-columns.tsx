@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { GetOrdersResType } from '@/schemaValidations/order.schema'
 import { useContext } from 'react'
-import { formatCurrency, formatDateTimeToLocaleString, getVietnameseOrderStatus, simpleMatchText } from '@/lib/utils'
+import { formatCurrency, formatDateTimeToLocaleString, getVietnameseOrderStatus, simpleMatchText } from '@/app/lib/utils'
 import Image from 'next/image'
 import { Badge } from '@/components/ui/badge'
 import { OrderStatus, OrderStatusValues } from '@/constants/type'
@@ -54,7 +54,7 @@ const orderTableColumns: ColumnDef<OrderItem>[] = [
                   <span className='font-semibold'>(#{guest.id})</span>
                 </div>
               </PopoverTrigger>
-              <PopoverContent className='w-[320px] sm:w-[440px]'>
+              <PopoverContent className='w-[320px] sm:w-110'>
                 <OrderGuestDetail guest={guest} orders={orderObjectByGuestId[guest.id]} />
               </PopoverContent>
             </Popover>
@@ -79,7 +79,8 @@ const orderTableColumns: ColumnDef<OrderItem>[] = [
               alt={row.original.dishSnapshot.name}
               width={50}
               height={50}
-              className='rounded-md object-cover w-[50px] h-[50px] cursor-pointer'
+              className='rounded-md object-cover w-12.5 h-12.5 cursor-pointer'
+              unoptimized
             />
           </PopoverTrigger>
           <PopoverContent>
@@ -89,7 +90,7 @@ const orderTableColumns: ColumnDef<OrderItem>[] = [
                 alt={row.original.dishSnapshot.name}
                 width={100}
                 height={100}
-                className='rounded-md object-cover w-[100px] h-[100px]'
+                className='rounded-md object-cover w-25 h-25'
               />
               <div className='space-y-1 text-sm'>
                 <h3 className='font-semibold'>{row.original.dishSnapshot.name}</h3>
@@ -133,7 +134,7 @@ const orderTableColumns: ColumnDef<OrderItem>[] = [
           defaultValue={OrderStatus.Pending}
           value={row.getValue('status')}
         >
-          <SelectTrigger className='w-[140px]'>
+          <SelectTrigger className='w-35'>
             <SelectValue placeholder='Theme' />
           </SelectTrigger>
           <SelectContent>
