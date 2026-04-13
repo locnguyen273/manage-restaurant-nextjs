@@ -42,10 +42,10 @@ export default function RevenueLineChart() {
                 if (chartData.length < 8) {
                   return value
                 }
-                if (chartData.length < 33) {
-                  const date = parse(value, 'dd/MM/yyyy', new Date())
-                  return format(date, 'dd')
-                }
+                // if (chartData.length < 33) {
+                //   const date = parse(value, 'dd/MM/yyyy', new Date())
+                //   return format(date, 'dd')
+                // }
               }}
             />
             <ChartTooltip cursor={false} content={<ChartTooltipContent indicator='dashed' />} />

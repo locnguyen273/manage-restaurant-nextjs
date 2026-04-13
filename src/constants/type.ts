@@ -12,6 +12,7 @@ export const Role = {
 } as const
 
 export const RoleValues = [Role.Owner, Role.Employee, Role.Guest] as const
+export type Role = typeof Role[keyof typeof Role]
 
 export const DishStatus = {
   Available: 'Available',
